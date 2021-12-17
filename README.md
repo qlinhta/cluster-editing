@@ -4,11 +4,12 @@
 
 ## AUTHOR
 
-votre nom / prénom
+TA / Quyen-Linh
 
 ## Optilio
 
-Indiquer ici votre login sur [optil.io](https://www.optil.io/optilion/)
+Login sur [optil.io](https://www.optil.io/optilion/)
+Username: qlinhta
 
 ## USAGE
 
