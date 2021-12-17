@@ -1,0 +1,12 @@
+p cep 7 10
+c optimal is 3 editions
+1 2
+2 3
+3 4
+4 1
+2 4
+2 5
+5 6
+6 7
+7 5
+7 4
