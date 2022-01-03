@@ -7,10 +7,8 @@
 using namespace std;
 
 Graph::Graph() {
-    string read;
-    getline(cin, line);
-    read = read.substr(6);
-    int blank = read.find(' ');
+    string read; getline(cin, line);
+    read = read.substr(6); int blank = read.find(' ');
     vertices = stoi(read.substr(0, blank));
     edges = stoi(read.substr(blank));
 
