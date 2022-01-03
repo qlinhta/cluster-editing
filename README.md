@@ -17,3 +17,7 @@ indiquer ici comment utiliser votre projet, par exemple
 
     python3 projet.py < file1.gr > solution
 
+## REFERENCES
+[1].
+[2].
+[3].
