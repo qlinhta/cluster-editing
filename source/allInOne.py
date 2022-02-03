@@ -1,4 +1,17 @@
+import signal
 import sys
+
+
+class Killer:
+    exit_now = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit)
+        signal.signal(signal.SIGTERM, self.exit)
+
+    def exit(self, signum, frame):
+        self.exit_now = True
+
 
 class Union:
 
@@ -31,6 +44,7 @@ class Union:
         self.parent[b] = a
         self.count[a] += self.count[b]
         return True
+
 
 class File:
     def read_file(self):
@@ -688,7 +702,7 @@ class KernelizedMultiCCInstance:
     def m(self):
         return len(self._initial_edges)
 
-    def greedy_bfs_fill(self, n_destroy_options, default_weight, iterations):
+    def greedy_bfs_fill(self, n_destroy_options, default_weight, killer):
         n_cc = len(self._cc_instances)
 
         seen = []  # nested list contains the seen boolean information
@@ -720,7 +734,7 @@ class KernelizedMultiCCInstance:
         last_improv = [0] * self._n_cc
 
         # runs as the number of iterations
-        for _ in range(iterations):  # iterate until killed
+        while not killer.exit_now:  # iterate until killed
             for i in range(self._n_cc):
                 if not interesting[i]:
                     continue
@@ -790,6 +804,7 @@ class KernelizedMultiCCInstance:
 
     def print_sol(self):
         n_cc = len(self._cc_instances)
+        f = open('Output.txt', 'w')
 
         # Concatenate clusters of each instance
         for i in range(n_cc):
@@ -810,7 +825,9 @@ class KernelizedMultiCCInstance:
                             u = self._ccs[i][x]
                             v = self._ccs[i][y]
                             if u < v and self._edges_exists.get((u, v)) is None:
-                                sys.stdout.write(f'{u + 1} {v + 1}\n')
+                                line = f'{u + 1} {v + 1}\n'
+                                sys.stdout.write(line)
+                                f.write(line)
 
         # Compute edges to delete
         for e in self._initial_edges:
@@ -818,7 +835,11 @@ class KernelizedMultiCCInstance:
             cc_u, id_u = self._vertex_to_cc[u]
             cc_v, id_v = self._vertex_to_cc[v]
             if cc_u != cc_v or (cc_u == cc_v and self._solutions[cc_u][id_u] != self._solutions[cc_v][id_v]):
-                sys.stdout.write(f'{u + 1} {v + 1}\n')
+                line = f'{u + 1} {v + 1}\n'
+                sys.stdout.write(line)
+                f.write(line)
+
+        f.close()
 
 
 import random
@@ -868,7 +889,7 @@ if __name__ == '__main__':
     opt = [i for i in range(5, 55)]
     weight = 10
     iterations = 30
-
+    killer = Killer()
     start_time = time.time()
     # start processing
     f = File()
@@ -876,5 +897,7 @@ if __name__ == '__main__':
     instance = KernelizedMultiCCInstance(number, edges, edges_exists)
 
     # running the greedy BFS solution
-    instance.greedy_bfs_fill(opt, weight, iterations)
+    instance.greedy_bfs_fill(opt, weight, killer)
     instance.print_sol()
+
+    #print("--- Total Time %s seconds ---" % (time.time() - start_time))
