@@ -1,24 +1,17 @@
 import sys
 
+
 class File:
     def read_file(self):
-        try:
-            data = [line.strip() for line in sys.stdin]
-        except FileNotFoundError:
-            raise Exception("File not found Please add correct file path")
-
-        number_of_vertices = int(data[0].split()[2])
+        data = iter([line.strip() for line in sys.stdin])
+        first_item = next(data)
+        number_of_vertices = int(first_item.split()[2])
         edges = []
-
-        for d in data[1:]:
+        edges_exists = {}
+        for d in data:
             u, v = [int(vertex) for vertex in d.split()]
-            edges.append((min(u - 1, v - 1), max(u - 1, v - 1)))
+            u, v = (min(u - 1, v - 1), max(u - 1, v - 1))
+            edges.append((u, v))
+            edges_exists[(u, v)] = True
 
-        return number_of_vertices, edges
-
-    def write_results(self, solution):
-        f = open('Output.txt', 'w')
-        for sol in solution:
-            f.write(sol + '\n')
-        f.close()
-
+        return number_of_vertices, edges, edges_exists

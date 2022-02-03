@@ -153,19 +153,15 @@ class Instance:
             self.greedy_move(v)
 
     def bfs_fill_vs(self, v, nv, vs, cluster_of_vs, seen):
-        q = queue.Queue()
-        q.put(v)
-
-        while not q.empty() and len(vs) < nv:
-            v = q.get()
+        q = [v]
+        while len(q) != 0 and len(vs) < nv:
+            v = q.pop(0)
             if seen[v]:
                 continue
             seen[v] = True
             vs.append(v)
             cluster_of_vs.append(self._cluster_of[v])
-
-            for u in self._g.neighbors(v):
-                q.put(u)
+            q.extend(self._g.neighbors(v))
 
     def m(self):
         return self._g.m()

@@ -1,4 +1,5 @@
 import random
+import sys
 
 from instance import Instance
 from graph import Graph
@@ -8,9 +9,10 @@ from localSearch import bfs_destroy_repair_ls_one_it_order_norand
 # Class handle an instance and divide in multiple connected components
 # the time complexity of this class is O(m) where m is the number of edges
 class KernelizedMultiCCInstance:
-    def __init__(self, n, edges):
-        self._vertex_to_cc = [() for _ in range(n)]  # hold pair (x,y)
+    def __init__(self, n, edges, edges_exists):
+        self._vertex_to_cc = [None for _ in range(n)]  # hold pair (x,y)
         self._initial_edges = edges
+        self._edges_exists = edges_exists
         self._initial_edges = sorted(self._initial_edges)  # sorted edges to get data faster
 
         # initializing the graph object
@@ -155,38 +157,39 @@ class KernelizedMultiCCInstance:
 
         return res
 
-    def get_sol(self):
-        solution = []
+    def print_sol(self):
+        f = open('Output.txt', 'w')
         n_cc = len(self._cc_instances)
+
         # Concatenate clusters of each instance
         for i in range(n_cc):
             n = self._cc_instances[i].n
             cluster_of = self._solutions[i]
-            clusters = [None] * n
+
+            clusters = [[] for _ in range(n)]
 
             for u in range(n):
-                index = cluster_of[u]
-                if clusters[index] is None:
-                    clusters[index] = [u]
-                else:
-                    clusters[index].append(u)
+                clusters[cluster_of[u]].append(u)
 
-            clusters = [[] if x is None else x for x in clusters]
+            clusters = [x for x in clusters if x is not None]
 
             for c in clusters:
                 for x in c:
                     for y in c:
-                        u = self._ccs[i][x]
-                        v = self._ccs[i][y]
-                        if u < v:
-                            if (u, v) not in self._initial_edges:
-                                solution.append(f'{u + 1} {v + 1}')
+                        if x != y:
+                            u = self._ccs[i][x]
+                            v = self._ccs[i][y]
+                            if u < v and self._edges_exists.get((u, v)) is None:
+                                line = f'{u + 1} {v + 1}\n'
+                                sys.stdout.write(line)
+                                f.write(line)
+
         # Compute edges to delete
         for e in self._initial_edges:
             u, v = e
             cc_u, id_u = self._vertex_to_cc[u]
             cc_v, id_v = self._vertex_to_cc[v]
             if cc_u != cc_v or (cc_u == cc_v and self._solutions[cc_u][id_u] != self._solutions[cc_v][id_v]):
-                solution.append(f'{u + 1} {v + 1}')
-
-        return solution
+                line = f'{u + 1} {v + 1}\n'
+                sys.stdout.write(line)
+                f.write(line)
