@@ -2,23 +2,23 @@
 
 [Le sujet](https://www.lamsade.dauphine.fr/~sikora/ens/graphes/projet2021/)
 
-#### AUTHOR
+### AUTHOR
 
 TA / Quyen-Linh
 
-#### Optilio
+### Optilio
 
 Login sur [optil.io](https://www.optil.io/optilion/)
 
 Username: QuyenLinhTA-DauphinePSL
 
-#### USAGE
+### USAGE
 
 Execution: 
 
     python3 allInOne.py < file1.gr
 
-#### REFERENCES
+### REFERENCES
 [1]. 
 [2].
 [3].
