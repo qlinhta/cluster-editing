@@ -9,15 +9,16 @@ TA / Quyen-Linh
 ## Optilio
 
 Login sur [optil.io](https://www.optil.io/optilion/)
+
 Username: QuyenLinhTA-DauphinePSL
 
 ## USAGE
 
-indiquer ici comment utiliser votre projet, par exemple
+Execution: 
 
-    python3 projet.py < file1.gr > solution
+    python3 allInOne.py < file1.gr
 
 ## REFERENCES
-[1].
+[1]. 
 [2].
 [3].
