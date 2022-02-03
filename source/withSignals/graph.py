@@ -32,13 +32,16 @@ class Graph:
 
     # remove edge between u and v vertex
     def remove_edge(self, u, v):
-        self._adj[u] = list(filter((v).__ne__, self._adj[u]))
-        self._adj[v] = list(filter((u).__ne__, self._adj[v]))
-        self._m -= 1
+        try:
+            self._adj[u].remove(v)
+            self._adj[v].remove(u)
+            self._m -= 1
+        except ValueError:
+            pass
 
     # sort the edges
     def sort_edges(self):
-        for vertex in range(len(self._adj)):
+        for vertex in range(self._n):
             self._adj[vertex] = sorted(self._adj[vertex])
 
     # return the neighbors of u
@@ -355,9 +358,9 @@ class Graph:
                 candidates = self._adj[vertex_v]
                 for vertex_x in candidates:
                     if vertex_x != vertex_u and self.is_adjacent(vertex_x, vertex_u) == 0:
-                        deleted = True
-                        self.remove_edge(vertex_x, vertex_v)
-
+                        if self.is_adjacent(vertex_x, vertex_v) == 1:
+                            deleted = True
+                            self.remove_edge(vertex_x, vertex_v)
         return deleted
 
     def kernelize(self):

@@ -48,19 +48,18 @@ class Union:
 
 class File:
     def read_file(self):
-        try:
-            data = [line.strip() for line in sys.stdin]
-        except FileNotFoundError:
-            raise Exception("File not found Please add correct file path")
-
-        number_of_vertices = int(data[0].split()[2])
+        data = iter([line.strip() for line in sys.stdin])
+        first_item = next(data)
+        number_of_vertices = int(first_item.split()[2])
         edges = []
-
-        for d in data[1:]:
+        edges_exists = {}
+        for d in data:
             u, v = [int(vertex) for vertex in d.split()]
-            edges.append((min(u - 1, v - 1), max(u - 1, v - 1)))
+            u, v = (min(u - 1, v - 1), max(u - 1, v - 1))
+            edges.append((u, v))
+            edges_exists[(u, v)] = True
 
-        return number_of_vertices, edges
+        return number_of_vertices, edges, edges_exists
 
     def write_results(self, solution):
         f = open('Output.txt', 'w')
@@ -72,9 +71,10 @@ class File:
 class Graph:
     def __init__(self, n, edges):
         self._adj = [[] for _ in range(n)]
-        self._n = n
-        self._m = 0
+        self._n = n  # number of vertices
+        self._m = 0  # number of edges
 
+        # adding edges
         for e in edges:
             try:
                 u, v = e
@@ -82,6 +82,7 @@ class Graph:
             except TypeError:
                 pass
 
+        # sorting the edges for faster access
         self.sort_edges()
 
     def n(self):
@@ -98,13 +99,16 @@ class Graph:
 
     # remove edge between u and v vertex
     def remove_edge(self, u, v):
-        self._adj[u] = list(filter((v).__ne__, self._adj[u]))
-        self._adj[v] = list(filter((u).__ne__, self._adj[v]))
-        self._m -= 1
+        try:
+            self._adj[u].remove(v)
+            self._adj[v].remove(u)
+            self._m -= 1
+        except ValueError:
+            pass
 
     # sort the edges
     def sort_edges(self):
-        for vertex in range(len(self._adj)):
+        for vertex in range(self._n):
             self._adj[vertex] = sorted(self._adj[vertex])
 
     # return the neighbors of u
@@ -127,6 +131,7 @@ class Graph:
             if self.degree(vertex_u) == 1:
                 continue
 
+            # delete all but one neigbor of degree 1 of v
             delete_next = False
             for vertex_v in self._adj[vertex_u]:
                 if delete_decision[vertex_v]:
@@ -153,6 +158,7 @@ class Graph:
     def disjoint_neighborhoods(self, u, v):
         return self.num_intersecting_neighbors(u, v) == 0
 
+    # ajdacency lists are assumed to be sorted in increasing order
     def num_intersecting_neighbors(self, u, v):
         return len(set(self._adj[u]).intersection(set(self._adj[v])))
 
@@ -160,6 +166,7 @@ class Graph:
         deleted = False
         marked_vertices = [-1] * self._n
 
+        # Mark vertices that have a degree 1 adjacent or two degree 2 that are adjacent, adjacents
         for vertex_u in range(self._n):
             if self.degree(vertex_u) == 1:
                 marked_vertices[self._adj[vertex_u][0]] = vertex_u
@@ -175,12 +182,13 @@ class Graph:
                     else:
                         continue
 
+                #  vertex_v has degree 2
                 first_nested_neighbor = self._adj[first_neighbor][0]
                 second_nested_neighbor = self._adj[first_neighbor][1]
 
                 if first_nested_neighbor == second_nested_neighbor:
                     first_nested_neighbor, second_nested_neighbor = second_nested_neighbor, first_nested_neighbor
-
+                #  vertex_x ==vertex_u
                 if second_neighbor == second_nested_neighbor:
                     marked_vertices[second_neighbor] = vertex_u
 
@@ -222,6 +230,9 @@ class Graph:
             return nums[l - 1]
         return None
 
+    # If 2 degree 2 vertices v,w are
+    # adjacent to u,x that are not adjacent,
+    # remove two non adjacent edges in this c4.
     def remove_c4(self):
         deleted = False
 
@@ -230,16 +241,19 @@ class Graph:
                 if self.degree(vertex_v) != 2:
                     continue
 
+                #  other_neighbor_x is the other neighbor of vertex_v
                 other_neighbor_x = self._adj[vertex_v][0]
                 if other_neighbor_x == vertex_u:
                     other_neighbor_x = self._adj[vertex_v][1]
 
-                if self.is_adjacent(vertex_u, vertex_v) == 1:
+                # vertex_u and x must be non-adjacent
+                if self.is_adjacent(vertex_u, other_neighbor_x) == 1:
                     continue
 
                 for vertex_w in self._adj[vertex_u]:
                     if self.degree(vertex_w) != 2 or vertex_w == vertex_v:
                         continue
+
                     other_neighbor_y = self._adj[vertex_w][0]
                     if other_neighbor_y == vertex_u:
                         other_neighbor_y = self._adj[vertex_w][1]
@@ -260,6 +274,9 @@ class Graph:
 
         return deleted
 
+    # If 3 degree <= 3 vertices u,v,w form a triangle
+    # which is not in any diamond,
+    # isolate them.
     def remove_deg3_triangles(self):
         deleted = False
         to_deleted = []
@@ -276,19 +293,20 @@ class Graph:
             neighbor_3 = self._adj[vertex_u][2]
 
             min_degree = min(self.degree(neighbor_1), self.degree(neighbor_2), self.degree(neighbor_3))
-            if min_degree > 3:
+            if min_degree > 3:  # we need at least a degree 2 or 3 in neighbors:
                 continue
 
             nb = self.is_adjacent(neighbor_1, neighbor_2) + \
                  self.is_adjacent(neighbor_2, neighbor_3) + \
                  self.is_adjacent(neighbor_3, neighbor_1)
-            if nb == 3:
+            if nb == 3:  # K_4
                 if self.degree(neighbor_2) == 3:
                     neighbor_1, neighbor_2 = neighbor_2, neighbor_1
 
                 if self.degree(neighbor_3) == 3:
                     neighbor_1, neighbor_3 = neighbor_3, neighbor_1
 
+                # neighbor_1 has degree 3
                 if self.degree(neighbor_2) <= 5 and self.degree(neighbor_3) <= 5:
                     for vertex_x in self.neighbors(neighbor_2):
                         if vertex_x != neighbor_1 and vertex_x != neighbor_2 and vertex_x != vertex_u:
@@ -298,15 +316,16 @@ class Graph:
                         if vertex_x != neighbor_1 and vertex_x != neighbor_2 and vertex_x != vertex_u:
                             to_deleted.append((neighbor_3, vertex_x))
 
-            elif nb == 2:
+            elif nb == 2:  # Diamond
                 if self.degree(neighbor_1) <= 3 and self.degree(neighbor_2) and self.degree(neighbor_3) <= 3:
                     if self.is_adjacent(neighbor_1, neighbor_2):
                         neighbor_1, neighbor_3 = neighbor_3, neighbor_1
 
                     if self.is_adjacent(neighbor_1, neighbor_2):
                         neighbor_2, neighbor_3 = neighbor_3, neighbor_2
+                    # neighbor_1 and neighbor_2 are not adjacent
 
-                    if self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 2:
+                    if self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 2:  # not a diamond
                         for vertex_x in self.neighbors(neighbor_1):
                             if vertex_x != neighbor_3 and vertex_x != vertex_u:
                                 to_deleted.append((neighbor_1, vertex_x))
@@ -315,16 +334,17 @@ class Graph:
                             if vertex_x != neighbor_3 and vertex_x != vertex_u:
                                 to_deleted.append((neighbor_2, vertex_x))
 
-            elif nb == 1:
+            elif nb == 1:  # Triangle
                 if self.is_adjacent(neighbor_1, neighbor_3):
                     neighbor_2, neighbor_3 = neighbor_3, neighbor_2
 
                 if self.is_adjacent(neighbor_2, neighbor_3):
                     neighbor_1, neighbor_3 = neighbor_3, neighbor_1
+                # neighbor_1 and neighbor_2 are adjacent, the others are not
 
                 if self.degree(neighbor_1) <= 3 and \
                         self.degree(neighbor_2) <= 3 and \
-                        self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 1:
+                        self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 1:  # not a diamond
 
                     to_deleted.append((vertex_u, neighbor_3))
 
@@ -342,6 +362,9 @@ class Graph:
 
         return deleted
 
+    # If 3 degree <= 3 vertices u,v,w form a triangle
+    # which is not in any diamond,
+    # isolate them
     def isolate_small_complete(self, s):
         deleted = False
         out_degrees = []
@@ -356,7 +379,7 @@ class Graph:
                 for vertex_w in self._adj[vertex_u]:
                     if vertex_v != vertex_w and self.is_adjacent(vertex_v, vertex_w) == 1:
                         a += 1
-
+            # If neighborhood is not a clique, continue
             if a != (s - 1) * (s - 2):
                 continue
 
@@ -402,9 +425,9 @@ class Graph:
                 candidates = self._adj[vertex_v]
                 for vertex_x in candidates:
                     if vertex_x != vertex_u and self.is_adjacent(vertex_x, vertex_u) == 0:
-                        deleted = True
-                        self.remove_edge(vertex_x, vertex_v)
-
+                        if self.is_adjacent(vertex_x, vertex_v) == 1:
+                            deleted = True
+                            self.remove_edge(vertex_x, vertex_v)
         return deleted
 
     def kernelize(self):
@@ -455,9 +478,6 @@ class Graph:
             ccs[cc_id_aux[uf.find(vertex_u)]].append(vertex_u)
 
         return ccs
-
-
-import queue
 
 
 class Instance:
@@ -611,19 +631,15 @@ class Instance:
             self.greedy_move(v)
 
     def bfs_fill_vs(self, v, nv, vs, cluster_of_vs, seen):
-        q = queue.Queue()
-        q.put(v)
-
-        while not q.empty() and len(vs) < nv:
-            v = q.get()
+        q = [v]
+        while len(q) != 0 and len(vs) < nv:
+            v = q.pop(0)
             if seen[v]:
                 continue
             seen[v] = True
             vs.append(v)
             cluster_of_vs.append(self._cluster_of[v])
-
-            for u in self._g.neighbors(v):
-                q.put(u)
+            q.extend(self._g.neighbors(v))
 
     def m(self):
         return self._g.m()
@@ -638,9 +654,10 @@ class Instance:
 # Class handle an instance and divide in multiple connected components
 # the time complexity of this class is O(m) where m is the number of edges
 class KernelizedMultiCCInstance:
-    def __init__(self, n, edges):
-        self._vertex_to_cc = [() for _ in range(n)]  # hold pair (x,y)
+    def __init__(self, n, edges, edges_exists):
+        self._vertex_to_cc = [None for _ in range(n)]  # hold pair (x,y)
         self._initial_edges = edges
+        self._edges_exists = edges_exists
         self._initial_edges = sorted(self._initial_edges)  # sorted edges to get data faster
 
         # initializing the graph object
@@ -785,41 +802,44 @@ class KernelizedMultiCCInstance:
 
         return res
 
-    def get_sol(self):
-        solution = []
+    def print_sol(self):
         n_cc = len(self._cc_instances)
+        f = open('Output.txt', 'w')
+
         # Concatenate clusters of each instance
         for i in range(n_cc):
             n = self._cc_instances[i].n
             cluster_of = self._solutions[i]
-            clusters = [None] * n
+
+            clusters = [[] for _ in range(n)]
 
             for u in range(n):
-                index = cluster_of[u]
-                if clusters[index] is None:
-                    clusters[index] = [u]
-                else:
-                    clusters[index].append(u)
+                clusters[cluster_of[u]].append(u)
 
-            clusters = [[] if x is None else x for x in clusters]
+            clusters = [x for x in clusters if x is not None]
 
             for c in clusters:
                 for x in c:
                     for y in c:
-                        u = self._ccs[i][x]
-                        v = self._ccs[i][y]
-                        if u < v:
-                            if (u, v) not in self._initial_edges:
-                                solution.append(f'{u + 1} {v + 1}')
+                        if x != y:
+                            u = self._ccs[i][x]
+                            v = self._ccs[i][y]
+                            if u < v and self._edges_exists.get((u, v)) is None:
+                                line = f'{u + 1} {v + 1}\n'
+                                sys.stdout.write(line)
+                                f.write(line)
+
         # Compute edges to delete
         for e in self._initial_edges:
             u, v = e
             cc_u, id_u = self._vertex_to_cc[u]
             cc_v, id_v = self._vertex_to_cc[v]
             if cc_u != cc_v or (cc_u == cc_v and self._solutions[cc_u][id_u] != self._solutions[cc_v][id_v]):
-                solution.append(f'{u + 1} {v + 1}')
+                line = f'{u + 1} {v + 1}\n'
+                sys.stdout.write(line)
+                f.write(line)
 
-        return solution
+        f.close()
 
 
 import random
@@ -867,25 +887,17 @@ import time
 
 if __name__ == '__main__':
     opt = [i for i in range(5, 55)]
-    weight = 10  # you can default from here
-
+    weight = 10
+    iterations = 30
     killer = Killer()
-
     start_time = time.time()
     # start processing
     f = File()
-    number, edges = f.read_file()
-    instance = KernelizedMultiCCInstance(number, edges)
+    number, edges, edges_exists = f.read_file()
+    instance = KernelizedMultiCCInstance(number, edges, edges_exists)
 
     # running the greedy BFS solution
     instance.greedy_bfs_fill(opt, weight, killer)
-    sol = instance.get_sol()
-
-    # output to console
-    for s in sol:
-        sys.stdout.write(s + "\n")
-
-    # writing a solution in a file
-    f.write_results(sol)
+    instance.print_sol()
 
     print("--- Total Time %s seconds ---" % (time.time() - start_time))
