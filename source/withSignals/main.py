@@ -7,7 +7,7 @@ from fileHandler import File
 
 if __name__ == '__main__':
     opt = [i for i in range(5, 55)]
-    weight = 10  # you can default from here
+    weight = 10
 
     killer = Killer()
 

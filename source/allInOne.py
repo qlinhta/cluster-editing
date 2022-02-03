@@ -874,4 +874,4 @@ if __name__ == '__main__':
     # writing a solution in a file
     # f.write_results(sol)
 
-    print("--- Total Time %s seconds ---" % (time.time() - start_time))
+    #print("--- Total Time %s seconds ---" % (time.time() - start_time))
