@@ -34,7 +34,7 @@ class Union:
 
 class File:
     def read_file(self):
-        data = iter([line.strip() for line in open('../realInstances/heur199.gr')])
+        data = iter([line.strip() for line in open('../realInstances/heur050.gr')])
         first_item = next(data)
         number_of_vertices = int(first_item.split()[2])
         edges = []
