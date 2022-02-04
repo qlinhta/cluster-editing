@@ -34,7 +34,7 @@ class Union:
 
 class File:
     def read_file(self):
-        data = iter([line.strip() for line in sys.stdin])
+        data = iter([line.strip() for line in open('../realInstances/heur199.gr')])
         first_item = next(data)
         number_of_vertices = int(first_item.split()[2])
         edges = []
@@ -878,3 +878,4 @@ if __name__ == '__main__':
     # running the greedy BFS solution
     instance.greedy_bfs_fill(opt, weight, iterations)
     instance.print_sol()
+    print("--- Total Time %s seconds ---" % (time.time() - start_time))
