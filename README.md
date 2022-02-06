@@ -40,3 +40,5 @@ properties._ Information Processing Letters
 [7]. Sebastian Böcker. _A golden ratio parameterized algorithm for cluster editing. Journal of Discrete Algorithms, 2012._
 
 [8]. Robert Ganian. _Using Neighborhood Diversity to Solve Hard Problems_
+
+[9]. Algorithm Design Techniques for Parameterized Graph Modification Problems | URL: https://fpt.akt.tu-berlin.de/publications/theses/guo06.pdf
