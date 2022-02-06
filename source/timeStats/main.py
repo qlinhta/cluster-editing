@@ -12,7 +12,7 @@ if __name__ == '__main__':
     weight = 10
     iterations = 30
 
-    onlyfiles = [f for f in listdir('files/') if isfile(join('files/', f))]
+    onlyfiles = [f for f in listdir('test/') if isfile(join('test/', f))]
     data = []
     for file in onlyfiles:
         file_data = {}
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     print(data)
 
     field_names = ['File name', 'Edges modified', 'Execution time']
-    with open('stats.csv', 'w') as csvfile:
+    with open('statsIteration30.csv', 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=field_names)
         writer.writeheader()
         writer.writerows(data)
