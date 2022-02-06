@@ -1,3 +1,11 @@
+'''
+Created by: Quyen Linh TA
+Username: qlinhta
+Date: 04/01/2022
+PyCharm 2021.3.1 (Professional Edition)
+Licensed to Quyen Linh TA
+'''
+
 import signal
 import sys
 
