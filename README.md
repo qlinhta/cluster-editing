@@ -38,3 +38,5 @@ pages 1132–1151. SIAM, 2016.
 properties._ Information Processing Letters
 
 [7]. Sebastian Böcker. _A golden ratio parameterized algorithm for cluster editing. Journal of Discrete Algorithms, 2012._
+
+[8]. Robert Ganian. _Using Neighborhood Diversity to Solve Hard Problems_
