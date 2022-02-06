@@ -3,7 +3,7 @@ import sys
 
 class File:
     def read_file(self, file):
-        data = iter([line.strip() for line in open('files/' + file)])
+        data = iter([line.strip() for line in open('test/' + file)])
         first_item = next(data)
         number_of_vertices = int(first_item.split()[2])
         edges = []

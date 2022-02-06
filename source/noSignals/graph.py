@@ -91,7 +91,7 @@ class Graph:
     def disjoint_neighborhoods(self, u, v):
         return self.num_intersecting_neighbors(u, v) == 0
 
-    # ajdacency lists are assumed to be sorted in increasing order
+    # adjacency lists are assumed to be sorted in increasing order
     def num_intersecting_neighbors(self, u, v):
         return len(set(self._adj[u]).intersection(set(self._adj[v])))
 
@@ -163,9 +163,8 @@ class Graph:
             return nums[l - 1]
         return None
 
-    # If 2 degree 2 vertices v,w are
-    # adjacent to u,x that are not adjacent,
-    # remove two non adjacent edges in this c4.
+    '''If 2 degree 2 vertices v,w are adjacent to u,x that are not adjacent,
+    remove two non adjacent edges in this c4'''
     def remove_c4(self):
         deleted = False
 
