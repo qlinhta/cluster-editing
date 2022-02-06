@@ -1,6 +1,13 @@
+'''
+Created by: Quyen Linh TA
+Username: qlinhta
+Date: 22/12/2021
+PyCharm 2021.3.1 (Professional Edition)
+Licensed to Quyen Linh TA
+'''
+
 import random
 import sys
-
 from instance import Instance
 from graph import Graph
 from localSearch import bfs_destroy_repair_ls_one_it_order_norand

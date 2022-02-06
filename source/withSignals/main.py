@@ -1,3 +1,11 @@
+'''
+Created by: Quyen Linh TA
+Username: qlinhta
+Date: 29/12/2021
+PyCharm 2021.3.1 (Professional Edition)
+Licensed to Quyen Linh TA
+'''
+
 import time
 import sys
 
