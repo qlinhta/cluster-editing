@@ -42,3 +42,5 @@ properties._ Information Processing Letters
 [8]. Robert Ganian. _Using Neighborhood Diversity to Solve Hard Problems_
 
 [9]. Algorithmusentwurfstechniken für parametrisierte Graphmodifikationsprobleme - Algorithm Design Techniques for Parameterized Graph Modification Problems | URL: https://fpt.akt.tu-berlin.de/publications/theses/guo06.pdf
+
+[10]. Erik Demaine. MIT 6.046J Design and Analysis of Algorithms, Spring 2015 | Complexity: Fixed-Parameter Algorithms | URL : https://www.youtube.com/watch?v=4q-jmGrmxKs
