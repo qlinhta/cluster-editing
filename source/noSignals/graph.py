@@ -64,7 +64,7 @@ class Graph:
             if self.degree(vertex_u) == 1:
                 continue
 
-            # delete all but one neigbor of degree 1 of v
+            # delete all but one neigbhour of degree 1 of v
             delete_next = False
             for vertex_v in self._adj[vertex_u]:
                 if delete_decision[vertex_v]:
