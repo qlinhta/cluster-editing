@@ -17,6 +17,13 @@ Username: QuyenLinhTA-DauphinePSL
 Execution: 
 
     python3 allInOne.py < file1.gr
+    
+### RESULT DEMO
+
+<img width="877" alt="Screenshot 2022-02-07 at 00 59 55" src="https://user-images.githubusercontent.com/60761870/152707236-893e4d3f-4959-4389-ae71-552307f70e06.png">
+
+<img width="875" alt="Screenshot 2022-02-07 at 00 58 56" src="https://user-images.githubusercontent.com/60761870/152707240-bd34570e-87dc-4326-adb1-8deafef45a2a.png">
+
 
 ### REFERENCES
 
