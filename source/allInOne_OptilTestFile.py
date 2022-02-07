@@ -6,6 +6,15 @@ PyCharm 2021.3.1 (Professional Edition)
 Licensed to Quyen Linh TA
 '''
 
+
+#References:
+'''
+This code was developed by Quyen Linh TA
+() Section KernelizedMultipleCC: Developed with advices of Dr. Noah Vogel | Sr.Data Scientist | Microsoft AI Lab
+() Section Instance: Developed with instructions & advices of George H. Smith & Dr. Dale T. Burney | Microsoft AI Lab
+'''
+
+
 import sys
 
 class Union:
@@ -118,7 +127,7 @@ class Graph:
         return 1 if v in self._adj[u] else 0
 
     # kernelization
-    def remove_excess_degree_one(self):
+    def deleteExcessDegreeOne(self):
         deleted = False
         delete_decision = [False] * self._n  # maintains the record of items to be deleted
         for vertex_u in range(self._n):
@@ -149,14 +158,14 @@ class Graph:
         self._m /= 2
         return deleted
 
-    def disjoint_neighborhoods(self, u, v):
-        return self.num_intersecting_neighbors(u, v) == 0
+    def disjointNeighbors(self, u, v):
+        return self.intersectionNeighbors(u, v) == 0
 
     # adjacency lists are assumed to be sorted in increasing order
-    def num_intersecting_neighbors(self, u, v):
+    def intersectionNeighbors(self, u, v):
         return len(set(self._adj[u]).intersection(set(self._adj[v])))
 
-    def remove_edge_disjoint_neighbors(self):
+    def deleteEdgesDisjointNeig(self):
         deleted = False
         marked_vertices = [-1] * self._n
 
@@ -195,8 +204,8 @@ class Graph:
             temp.clear()
 
             for vertex_v in self._adj[vertex_u]:
-                if vertex_v != marked_vertices[vertex_u] and self.disjoint_neighborhoods(vertex_u, vertex_v):
-                    vertex_to_deleted = self._lower_bound(self._adj[vertex_v], vertex_u)
+                if vertex_v != marked_vertices[vertex_u] and self.disjointNeighbors(vertex_u, vertex_v):
+                    vertex_to_deleted = self.lower_bound(self._adj[vertex_v], vertex_u)
                     if vertex_to_deleted:
                         self._adj[vertex_v].remove(vertex_to_deleted)
                         deleted = True
@@ -212,7 +221,7 @@ class Graph:
 
         return deleted
 
-    def _lower_bound(self, nums, target):
+    def lower_bound(self, nums, target):
         if len(nums) > 0:
             l, r = 0, len(nums) - 1
             while l <= r:
@@ -227,7 +236,7 @@ class Graph:
     # If 2 degree 2 vertices v,w are
     # adjacent to u,x that are not adjacent,
     # remove two non adjacent edges in this c4.
-    def remove_c4(self):
+    def deleteC4(self):
         deleted = False
 
         for vertex_u in range(self._n):
@@ -271,7 +280,7 @@ class Graph:
     # If 3 degree <= 3 vertices u,v,w form a triangle
     # which is not in any diamond,
     # isolate them.
-    def remove_deg3_triangles(self):
+    def deleteDegThreeTriangles(self):
         deleted = False
         to_deleted = []
 
@@ -319,7 +328,7 @@ class Graph:
                         neighbor_2, neighbor_3 = neighbor_3, neighbor_2
                     # neighbor_1 and neighbor_2 are not adjacent
 
-                    if self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 2:  # not a diamond
+                    if self.intersectionNeighbors(neighbor_1, neighbor_2) == 2:  # not a diamond
                         for vertex_x in self.neighbors(neighbor_1):
                             if vertex_x != neighbor_3 and vertex_x != vertex_u:
                                 to_deleted.append((neighbor_1, vertex_x))
@@ -338,7 +347,7 @@ class Graph:
 
                 if self.degree(neighbor_1) <= 3 and \
                         self.degree(neighbor_2) <= 3 and \
-                        self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 1:  # not a diamond
+                        self.intersectionNeighbors(neighbor_1, neighbor_2) == 1:  # not a diamond
 
                     to_deleted.append((vertex_u, neighbor_3))
 
@@ -359,7 +368,7 @@ class Graph:
     # If 3 degree <= 3 vertices u,v,w form a triangle
     # which is not in any diamond,
     # isolate them
-    def isolate_small_complete(self, s):
+    def smallCompleteIsolation(self, s):
         deleted = False
         out_degrees = []
         outer = []
@@ -430,20 +439,20 @@ class Graph:
         while True:
             cont = False
 
-            while self.remove_excess_degree_one():
+            while self.deleteExcessDegreeOne():
                 cont = True
 
-            while self.remove_edge_disjoint_neighbors():
+            while self.deleteEdgesDisjointNeig():
                 cont = True
 
-            while self.remove_c4():
+            while self.deleteC4():
                 cont = True
 
-            while self.remove_deg3_triangles():
+            while self.deleteDegThreeTriangles():
                 cont = True
 
             for s in range(3, 11):
-                while self.isolate_small_complete(s):
+                while self.smallCompleteIsolation(s):
                     cont = True
 
             i += 1
