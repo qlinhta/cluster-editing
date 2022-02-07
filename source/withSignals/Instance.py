@@ -6,6 +6,13 @@ PyCharm 2021.3.1 (Professional Edition)
 Licensed to Quyen Linh TA
 '''
 
+#References:
+'''
+This code was developed by Quyen Linh TA
+() Section KernelizedMultipleCC: Developed with advices of Dr. Noah Vogel | Sr.Data Scientist | Microsoft AI Lab
+() Section Instance: Developed with instructions & advices of George H. Smith & Dr. Dale T. Burney | Microsoft AI Lab
+'''
+
 from graph import Graph
 import queue
 

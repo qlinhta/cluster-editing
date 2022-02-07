@@ -1,7 +1,7 @@
 '''
 Created by: Quyen Linh TA
 Username: qlinhta
-Date: 14/12/2021
+Date: 04/01/2022
 PyCharm 2021.3.1 (Professional Edition)
 Licensed to Quyen Linh TA
 '''
@@ -9,11 +9,24 @@ Licensed to Quyen Linh TA
 #References:
 '''
 This code was developed by Quyen Linh TA
-() Section KernelizedMultiCCInstance: Developed with advices of Dr. Noah Vogel | Sr.Data Scientist | Microsoft AI Lab
+() Section KernelizedMultipleCC: Developed with advices of Dr. Noah Vogel | Sr.Data Scientist | Microsoft AI Lab
 () Section Instance: Developed with instructions & advices of George H. Smith & Dr. Dale T. Burney | Microsoft AI Lab
 '''
 
+import signal
 import sys
+
+class Killer:
+    exit_now = False
+
+    def __init__(self):
+        signal.signal(signal.SIGINT, self.exit)
+        signal.signal(signal.SIGTERM, self.exit)
+
+    def exit(self, signum, frame):
+        self.exit_now = True
+
+
 class Union:
 
     def __init__(self, n):
@@ -46,9 +59,10 @@ class Union:
         self.count[a] += self.count[b]
         return True
 
-class File:
+
+class InputFiles:
     def read_file(self):
-        data = iter([line.strip() for line in open('../realInstances/heur113.gr')])
+        data = iter([line.strip() for line in sys.stdin])
         first_item = next(data)
         number_of_vertices = int(first_item.split()[2])
         edges = []
@@ -124,7 +138,7 @@ class Graph:
         return 1 if v in self._adj[u] else 0
 
     # kernelization
-    def remove_excess_degree_one(self):
+    def deleteExcessDegreeOne(self):
         deleted = False
         delete_decision = [False] * self._n  # maintains the record of items to be deleted
         for vertex_u in range(self._n):
@@ -155,14 +169,14 @@ class Graph:
         self._m /= 2
         return deleted
 
-    def disjoint_neighborhoods(self, u, v):
-        return self.num_intersecting_neighbors(u, v) == 0
+    def disjointNeighbors(self, u, v):
+        return self.intersectionNeighbors(u, v) == 0
 
     # ajdacency lists are assumed to be sorted in increasing order
-    def num_intersecting_neighbors(self, u, v):
+    def intersectionNeighbors(self, u, v):
         return len(set(self._adj[u]).intersection(set(self._adj[v])))
 
-    def remove_edge_disjoint_neighbors(self):
+    def deleteEdgesDisjointNeig(self):
         deleted = False
         marked_vertices = [-1] * self._n
 
@@ -201,8 +215,8 @@ class Graph:
             temp.clear()
 
             for vertex_v in self._adj[vertex_u]:
-                if vertex_v != marked_vertices[vertex_u] and self.disjoint_neighborhoods(vertex_u, vertex_v):
-                    vertex_to_deleted = self._lower_bound(self._adj[vertex_v], vertex_u)
+                if vertex_v != marked_vertices[vertex_u] and self.disjointNeighbors(vertex_u, vertex_v):
+                    vertex_to_deleted = self.lower_bound(self._adj[vertex_v], vertex_u)
                     if vertex_to_deleted:
                         self._adj[vertex_v].remove(vertex_to_deleted)
                         deleted = True
@@ -218,7 +232,7 @@ class Graph:
 
         return deleted
 
-    def _lower_bound(self, nums, target):
+    def lower_bound(self, nums, target):
         if len(nums) > 0:
             l, r = 0, len(nums) - 1
             while l <= r:
@@ -233,7 +247,7 @@ class Graph:
     # If 2 degree 2 vertices v,w are
     # adjacent to u,x that are not adjacent,
     # remove two non adjacent edges in this c4.
-    def remove_c4(self):
+    def deleteC4(self):
         deleted = False
 
         for vertex_u in range(self._n):
@@ -277,7 +291,7 @@ class Graph:
     # If 3 degree <= 3 vertices u,v,w form a triangle
     # which is not in any diamond,
     # isolate them.
-    def remove_deg3_triangles(self):
+    def deleteDegThreeTriangles(self):
         deleted = False
         to_deleted = []
 
@@ -325,7 +339,7 @@ class Graph:
                         neighbor_2, neighbor_3 = neighbor_3, neighbor_2
                     # neighbor_1 and neighbor_2 are not adjacent
 
-                    if self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 2:  # not a diamond
+                    if self.intersectionNeighbors(neighbor_1, neighbor_2) == 2:  # not a diamond
                         for vertex_x in self.neighbors(neighbor_1):
                             if vertex_x != neighbor_3 and vertex_x != vertex_u:
                                 to_deleted.append((neighbor_1, vertex_x))
@@ -344,7 +358,7 @@ class Graph:
 
                 if self.degree(neighbor_1) <= 3 and \
                         self.degree(neighbor_2) <= 3 and \
-                        self.num_intersecting_neighbors(neighbor_1, neighbor_2) == 1:  # not a diamond
+                        self.intersectionNeighbors(neighbor_1, neighbor_2) == 1:  # not a diamond
 
                     to_deleted.append((vertex_u, neighbor_3))
 
@@ -365,7 +379,7 @@ class Graph:
     # If 3 degree <= 3 vertices u,v,w form a triangle
     # which is not in any diamond,
     # isolate them
-    def isolate_small_complete(self, s):
+    def smallCompleteIsolation(self, s):
         deleted = False
         out_degrees = []
         outer = []
@@ -436,20 +450,20 @@ class Graph:
         while True:
             cont = False
 
-            while self.remove_excess_degree_one():
+            while self.deleteExcessDegreeOne():
                 cont = True
 
-            while self.remove_edge_disjoint_neighbors():
+            while self.deleteEdgesDisjointNeig():
                 cont = True
 
-            while self.remove_c4():
+            while self.deleteC4():
                 cont = True
 
-            while self.remove_deg3_triangles():
+            while self.deleteDegThreeTriangles():
                 cont = True
 
             for s in range(3, 11):
-                while self.isolate_small_complete(s):
+                while self.smallCompleteIsolation(s):
                     cont = True
 
             i += 1
@@ -653,7 +667,7 @@ class Instance:
 
 # Class handle an instance and divide in multiple connected components
 # the time complexity of this class is O(m) where m is the number of edges
-class KernelizedMultiCCInstance:
+class KernelizationMultipleCC:
     def __init__(self, n, edges, edges_exists):
         self._vertex_to_cc = [None for _ in range(n)]  # hold pair (x,y)
         self._initial_edges = edges
@@ -702,7 +716,7 @@ class KernelizedMultiCCInstance:
     def m(self):
         return len(self._initial_edges)
 
-    def greedy_bfs_fill(self, n_destroy_options, default_weight, iterations):
+    def greedy_bfs_fill(self, n_destroy_options, default_weight, killer):
         n_cc = len(self._cc_instances)
 
         seen = []  # nested list contains the seen boolean information
@@ -734,7 +748,7 @@ class KernelizedMultiCCInstance:
         last_improv = [0] * self._n_cc
 
         # runs as the number of iterations
-        for _ in range(iterations):  # iterate until killed
+        while not killer.exit_now:  # iterate until killed
             for i in range(self._n_cc):
                 if not interesting[i]:
                     continue
@@ -804,6 +818,7 @@ class KernelizedMultiCCInstance:
 
     def print_sol(self):
         n_cc = len(self._cc_instances)
+        f = open('Output.txt', 'w')
 
         # Concatenate clusters of each instance
         for i in range(n_cc):
@@ -824,7 +839,9 @@ class KernelizedMultiCCInstance:
                             u = self._ccs[i][x]
                             v = self._ccs[i][y]
                             if u < v and self._edges_exists.get((u, v)) is None:
-                                sys.stdout.write(f'{u + 1} {v + 1}\n')
+                                line = f'{u + 1} {v + 1}\n'
+                                sys.stdout.write(line)
+                                f.write(line)
 
         # Compute edges to delete
         for e in self._initial_edges:
@@ -832,7 +849,11 @@ class KernelizedMultiCCInstance:
             cc_u, id_u = self._vertex_to_cc[u]
             cc_v, id_v = self._vertex_to_cc[v]
             if cc_u != cc_v or (cc_u == cc_v and self._solutions[cc_u][id_u] != self._solutions[cc_v][id_v]):
-                sys.stdout.write(f'{u + 1} {v + 1}\n')
+                line = f'{u + 1} {v + 1}\n'
+                sys.stdout.write(line)
+                f.write(line)
+
+        f.close()
 
 
 import random
@@ -882,14 +903,15 @@ if __name__ == '__main__':
     opt = [i for i in range(5, 55)]
     weight = 10
     iterations = 30
-
+    killer = Killer()
     start_time = time.time()
     # start processing
-    f = File()
+    f = InputFiles()
     number, edges, edges_exists = f.read_file()
-    instance = KernelizedMultiCCInstance(number, edges, edges_exists)
+    instance = KernelizationMultipleCC(number, edges, edges_exists)
 
     # running the greedy BFS solution
-    instance.greedy_bfs_fill(opt, weight, iterations)
+    instance.greedy_bfs_fill(opt, weight, killer)
     instance.print_sol()
+
     print("--- Total Time %s seconds ---" % (time.time() - start_time))

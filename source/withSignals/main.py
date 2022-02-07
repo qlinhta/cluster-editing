@@ -10,8 +10,8 @@ import time
 import sys
 
 from SIGTERM import Killer
-from kernelizedMultiCCInstance import KernelizedMultiCCInstance
-from fileHandler import File
+from KernelizationMultipleCC import KernelizationMultipleCC
+from InputDIMACS import InputFiles
 
 if __name__ == '__main__':
     opt = [i for i in range(5, 55)]
@@ -20,9 +20,9 @@ if __name__ == '__main__':
     killer = Killer()
     start_time = time.time()
     # start processing
-    f = File()
+    f = InputFiles()
     number, edges, edges_exists = f.read_file()
-    instance = KernelizedMultiCCInstance(number, edges, edges_exists)
+    instance = KernelizationMultipleCC(number, edges, edges_exists)
 
     # running the greedy BFS solution
     instance.greedy_bfs_fill(opt, weight, killer)
