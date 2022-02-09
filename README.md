@@ -14,11 +14,15 @@ Username: QuyenLinhTA-DauphinePSL
 
 ### USAGE
 
-Execution: 
+Execution program run with SIGTERM: 
 
-    python3 allInOne.py < file1.gr
+    python3 main.py < file1.gr 
     
-### RESULT DEMO
+Execution program run without SIGTERM: 
+
+    python3 all_in_one_for_optil.py < file1.gr 
+    
+### RESULT DEMO (INTERATION SET = 30)
 
 <img width="600" alt="Screenshot 2022-02-07 at 00 59 55" src="https://user-images.githubusercontent.com/60761870/152707236-893e4d3f-4959-4389-ae71-552307f70e06.png">
 
