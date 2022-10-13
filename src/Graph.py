@@ -116,24 +116,23 @@ class Graph:
 
         return ccs # return the list of connected components
 
-    def deleteExcessDegreeOne(self):
+    def deleteExcessDegreeOne(self): # delete excess degree one vertices
         deletionCheck = False
-        decision = [False] * self._n  # maintains the record of items to be deleted
+        decision = [False] * self._n  # decision[i] = True if vertex i is deleted else False
         for vertex_u in range(self._n):
-            if self.degree(vertex_u) == 1:
+            if self.degree(vertex_u) == 1: # if vertex_u has degree 1
                 continue
             willDelete = False
-            for vertex_v in self._adj[vertex_u]:
-                if decision[vertex_v]:
+            for vertex_v in self._adj[vertex_u]: # O(d(u))
+                if decision[vertex_v]: # if vertex_v is deleted then continue
                     continue
 
-                if self.degree(vertex_v) == 1:
+                if self.degree(vertex_v) == 1: # if vertex_v has degree 1
                     if willDelete:
                         decision[vertex_v] = True
                         deletionCheck = True
                     else:
                         willDelete = True
-
         self._m = 0
         for vertex_u in range(self._n):
             if decision[vertex_u]:
@@ -145,13 +144,13 @@ class Graph:
         self._m /= 2
         return deletionCheck
 
-    def intersectionNeighbors(self, u, v):
+    def intersectionNeighbors(self, u, v): # return the number of common neighbors of u and v
         return len(set(self._adj[u]).intersection(set(self._adj[v])))
 
-    def disjointNeighbors(self, u, v):
+    def disjointNeighbors(self, u, v): # return the number of disjoint neighbors of u and v
         return self.intersectionNeighbors(u, v) == 0
 
-    def deleteEdgesDisjointNeig(self):
+    def deleteEdgesDisjointNeig(self): # delete edges between disjoint neighbors of u and v
         deletionCheck = False
         markedVertex = [-1] * self._n
 
