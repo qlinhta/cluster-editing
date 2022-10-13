@@ -8,12 +8,11 @@ Licensed to Quyen Linh TA
 
 
 class Union:
+    def __init__(self, n): # n is number of vertices
+        self.parent = [i for i in range(n)] # parent of each vertex
+        self.count = [1 for i in range(n)] # number of vertices in each cluster
 
-    def __init__(self, n):
-        self.parent = [i for i in range(n)]
-        self.count = [1 for i in range(n)]
-
-    def find(self, a):
+    def find(self, a): # find the root of a
         root = a
         while self.parent[root] != root:
             root = self.parent[root]
@@ -41,8 +40,8 @@ class Union:
 
 
 class Graph:
-    def __init__(self, n, edges):
-        self._adj = [[] for _ in range(n)]
+    def __init__(self, n, edges): # n is number of vertices, edges is list of edges
+        self._adj = [[] for _ in range(n)] # adjacency list
         self._n = n  # number of vertices
         self._m = 0  # number of edges
 
@@ -57,10 +56,10 @@ class Graph:
         # sorting the edges for faster access
         self.sort_edges()
 
-    def n(self):
+    def n(self): # return number of vertices
         return self._n
 
-    def m(self):
+    def m(self): # return number of edges
         return self._m
 
     # add edge between u and v vertex
@@ -88,11 +87,10 @@ class Graph:
         return self._adj[u]
 
     def degree(self, u):
-        return len(self._adj[u])     # return the number of neighbors
+        return len(self._adj[u])  # return the number of neighbors
 
     def adjacent(self, u, v):
-        return 1 if v in self._adj[u] else 0     # return check if both vertices are adjacent
-
+        return 1 if v in self._adj[u] else 0  # return check if both vertices are adjacent
 
     # kernelization
     def connected_components(self):
@@ -437,4 +435,3 @@ class Graph:
 
         m_removed -= self._m
         return m_removed
-

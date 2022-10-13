@@ -9,7 +9,7 @@ Licensed to Quyen Linh TA
 import random
 import sys
 from Instance import Instance
-from graph import Graph
+from Graph import Graph
 from LocalSearch import bfs_destroy_repair
 
 

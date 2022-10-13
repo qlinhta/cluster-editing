@@ -12,7 +12,7 @@ Licensed to Quyen Linh TA
 import time
 
 from KernelizationMultipleCC import KernelizationMultipleCC
-from InputDIMACS import InputFiles
+from Dimacs import InputFiles
 
 import signal
 

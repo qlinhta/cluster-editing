@@ -6,7 +6,7 @@ PyCharm 2021.3.1 (Professional Edition)
 Licensed to Quyen Linh TA
 '''
 
-from graph import Graph
+from Graph import Graph
 import queue
 
 
