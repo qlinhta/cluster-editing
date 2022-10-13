@@ -9,16 +9,8 @@ Licensed to Quyen Linh TA
 '''IN CASE MY PROGRAM DO NOT GO WELL WITH SIGTERM SIGNAL, PLEASE EXECUTE all_in_one_for_optil.py TO CONSIDER MY RESULTS
 '''
 
-#References:
-'''
-This code was developed by Quyen Linh TA
-() Section KernelizedMultipleCC: Developed with advices of Dr. Noah Vogel | Sr.Data Scientist | Microsoft AI Lab
-() Section Instance: Developed with instructions & advices of George H. Smith & Dr. Dale T. Burney | Microsoft AI Lab
-() Reference algorithms and support theory by Pr. Robyn K. Martinez, Cornell University
-'''
-
-
 import sys
+
 
 class Union:
 
@@ -117,11 +109,10 @@ class Graph:
         return self._adj[u]
 
     def degree(self, u):
-        return len(self._adj[u])     # return the number of neighbors
+        return len(self._adj[u])  # return the number of neighbors
 
     def adjacent(self, u, v):
-        return 1 if v in self._adj[u] else 0     # return check if both vertices are adjacent
-
+        return 1 if v in self._adj[u] else 0  # return check if both vertices are adjacent
 
     # kernelization
     def connected_components(self):
@@ -869,7 +860,7 @@ import time
 if __name__ == '__main__':
     opt = [i for i in range(5, 55)]
     weight = 10
-    iterations = 30 #Best for optil
+    iterations = 30  # Best for optil
 
     start_time = time.time()
     # start processing
