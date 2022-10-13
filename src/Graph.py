@@ -93,24 +93,28 @@ class Graph:
         return 1 if v in self._adj[u] else 0  # return check if both vertices are adjacent
 
     # kernelization
-    def connected_components(self):
-        p = Union(self._n)
+    def connected_components(self): # return the number of connected components
+        p = Union(self._n) # create a union-find data structure
 
         for u in range(self._n):
-            for v in self._adj[u]:
-                p.merge(u, v)
+            '''
+            For each vertex u, we iterate through all its neighbors v and merge u and v into the same cluster.
+            Because we are using Union-Find data structure, we can find the root of u and v in O(1) time.
+            '''
+            for v in self._adj[u]: # O(d(u))
+                p.merge(u, v) # O(1)
 
-        countConnectedComponents = 0
-        connectedComponentsID = [0 for i in range(self._n)]
-        for u in range(self._n):
-            if p.parent[u] == u:
-                connectedComponentsID[u] = countConnectedComponents
-                countConnectedComponents += 1
-        ccs = [[] for i in range(countConnectedComponents)]
-        for u in range(self._n):
-            ccs[connectedComponentsID[p.find(u)]].append(u)
+        countConnectedComponents = 0 # number of connected components
+        connectedComponentsID = [0 for i in range(self._n)] # the id of connected component of each vertex
+        for u in range(self._n): # O(n)
+            if p.parent[u] == u: # if u is the root of its cluster
+                connectedComponentsID[u] = countConnectedComponents # assign the id of connected component for u
+                countConnectedComponents += 1 # increase the number of connected components
+        ccs = [[] for i in range(countConnectedComponents)] # list of connected components
+        for u in range(self._n): # O(n)
+            ccs[connectedComponentsID[p.find(u)]].append(u) # add u to the connected component of u
 
-        return ccs
+        return ccs # return the list of connected components
 
     def deleteExcessDegreeOne(self):
         deletionCheck = False
