@@ -26,6 +26,17 @@ Execution program run without SIGTERM:
 
 <img width="600" alt="Screenshot 2022-02-07 at 00 58 56" src="https://user-images.githubusercontent.com/60761870/152707240-bd34570e-87dc-4326-adb1-8deafef45a2a.png">
 
+### CITATION
+```
+@misc{quyenlinh2021clusterediting,
+  title={Cluster Editing - Heuristic Solver},
+  author={TA, Quyen-Linh},
+  howpublished={\url{https://www.optil.io/optilion/}},
+  username={QuyenLinhTA-DauphinePSL},
+  year={2021},
+  note={Repository for Cluster Editing algorithms and analysis}
+}
+```
 
 ### REFERENCES
 
